@@ -50,29 +50,43 @@ int Metrify_Random_Number(unsigned int limit, unsigned int* out_number) {
 
 int Metrify_Random_Number_From_Range(unsigned int start_range, unsigned int end_range, unsigned int* out_number) {
     unsigned int range_length;
+    unsigned int random_offset_within_range = 0U;
     if (out_number == NULL) {
         return METRIFY_ERROR;
     }
     if (start > end) {
         return METRIFY_ERROR;
     }
-    range_length = end - start + 1U;
+    range_length = range_end - range_start + 1U;
     if (range_length == 0U) {
         return METRIFY_ERROR;
     }
-    if (range_length > (unsignedong long)RAND_MAX) {
+    if (range_length > (unsigned int)RAND_MAX) {
         return METRIFY_ERROR;
     }
-
-    unsigned int random_offset_within_range = 0U;
-    int status_code = Metrify_Random_Number((unsigned int)range_length,
-                                            &random_offset_within_range);
-    if (status_code != METRIFY_SUCCESS) {
-      return status_code;
+    random_offset_within_range = 0U;
+    if (Metrify_Random_Number(range_length, &random_offset_within_range) != METRIFY_SUCCESS) {
+        return METRIFY_ERROR;
     }
-
-    *out_number = start + random_offset_within_range;
+    *out_number = start_range + random_offset_within_range;
     return METRIFY_SUCCESS;
 }
 
-int Metrify_Random_Number_From_Set(unsigned int* array, unsigned int array_length, unsigned int* out_number);
+int Metrify_Random_Number_From_Array(unsigned int* array, unsigned int array_length, unsigned int* out_number) {
+    unsigned int random_index_within_array;
+    random_index_within_array = 0U;
+    if (out_number == NULL || array == NULL) {
+        return METRIFY_ERROR;
+    }
+    if (array_length == 0U) {
+        return METRIFY_ERROR;
+    }
+    if (array_length > (unsigned int)RAND_MAX) {
+        return METRIFY_ERROR;
+    }
+    if (Metrify_Random_Number(array_length, &random_index_within_array) != METRIFY_SUCCESS) {
+        return METRIFY_ERROR;
+    }
+    *out_number = start_range + random_offset_within_range;
+    return METRIFY_SUCCESS;
+}
